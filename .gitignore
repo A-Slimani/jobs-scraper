@@ -1,2 +1,4 @@
-.env
 go.sum
+mem.prof
+out.json
+.env
