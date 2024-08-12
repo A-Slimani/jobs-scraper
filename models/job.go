@@ -8,4 +8,5 @@ type Job struct {
 	Location string `json:"location"`
 	Link     string `json:"link"`
 	Website  string `json:"website"`
+	Status   string `json:"status"`
 }

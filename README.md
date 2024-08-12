@@ -1,2 +1,3 @@
 ## Todo
-- Add an update function to update existing roles
+- Add an update function to update existing roles (probably combined with pocketbase)
+-   
