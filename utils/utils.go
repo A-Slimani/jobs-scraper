@@ -14,6 +14,9 @@ func CreateDbConn() *pgx.Conn {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+	if os.Getenv("DB_URL") == "" {
+		log.Fatal("DB_URL not found in .env file")
+	}
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DB_URL"))
 	if err != nil {
 		log.Fatal("Unable to connect to database")

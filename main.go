@@ -35,6 +35,7 @@ func main() {
 	// make this a switch statement will work on it later when I add different parsers
 	// flag.StringVar(&baseUrl, "url", "https://www.seek.com.au", "The base URL to scrape")
 	flag.StringVar(&roleSearch, "roles", "software", "The role to search for")
+	flag.BoolVar(&toExport, "export", false, "Export the data to a file")
 	flag.Parse()
 	roleSearch = strings.Replace(roleSearch, " ", "-", -1) + "-jobs"
 
@@ -44,7 +45,7 @@ func main() {
 	}
 
 	if toExport {
-		options.Exporters = append(options.Exporters, &export.JSON{})
+		options.Exporters = append(options.Exporters, &export.CSV{})
 	}
 
 	geziyor.NewGeziyor(&options).Start()

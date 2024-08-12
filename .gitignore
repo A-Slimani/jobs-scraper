@@ -1,4 +1,5 @@
 go.sum
 mem.prof
 out.json
+out.csv
 .env
