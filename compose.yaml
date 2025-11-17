@@ -1,0 +1,15 @@
+services:
+  roles-db:
+    image: postgres:18.1
+    container_name: roles-db
+    environment:
+      POSTGRES_USER: roles
+      POSTGRES_PASSWORD: roles
+      POSTGRES_DB: rolesdb
+    ports:
+    - "5433:5433"
+    volumes:
+    - rolesdb_data:/var/lib/postgresql/data
+
+volumes:
+  rolesdb_data:
