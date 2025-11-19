@@ -26,9 +26,17 @@ def save_content(dir, filename, content):
     dir_path.mkdir(exist_ok=True)
 
   try:
-    with open(f"{dir}/{filename}", 'w', encoding='utf-8') as f:
-      f.write(content)
+    filepath = Path(f"{dir}/{filename}")
+
+    if not filepath.exists():
+      with open(f"{dir}/{filename}", 'w', encoding='utf-8') as f:
+        f.write(content)
     
+    else:
+      print(f"{filename} already exists")
+      return True
+    
+    print(f"{filename} downloaded") 
     return True
   
   except Exception as e:
