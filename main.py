@@ -1,6 +1,13 @@
-from db import create_table, insert_roles, insert_descriptions, get_links
-from extract_roles import extract_roles, extract_description
-from dl_roles import get_webpage_content, save_content
+from database import ( 
+  create_table, 
+  insert_roles, 
+  insert_descriptions, 
+  get_links, 
+  get_random_description
+)
+from extract import extract_roles, extract_description
+from download import get_webpage_content, save_content
+from parse import parse_role_description
 from datetime import date
 from pathlib import Path
 import argparse
@@ -13,9 +20,9 @@ if __name__ == "__main__":
   parser.add_argument('--extract-roles', action='store_true', help='extract and upload roles to db')
   parser.add_argument('--download-description', action='store_true', help='download each role page')
   parser.add_argument('--extract-description', action='store_true', help='extract descriptions from roles')
+  parser.add_argument('--test-keyword-parser', action='store_true', help='test the ollama keyword parser')
 
 
-  # dl web pages
   args = parser.parse_args()
   if args.download_roles:
     dir = "./seek_roles"
@@ -30,7 +37,6 @@ if __name__ == "__main__":
       else:
         print(f"{file_name} already exists")
 
-  # extract and upload roles 
   if args.extract_roles:
     create_table()  
 
@@ -45,7 +51,6 @@ if __name__ == "__main__":
 
     insert_roles(r_merged.values())
 
-  # # extract and upload description
   if args.download_description:
     try: 
       dir = './seek_roles/descriptions/'
@@ -77,4 +82,6 @@ if __name__ == "__main__":
     except Exception as e:
       print(f"Extraction error: {e}")
 
-     
+  if args.test_keyword_parser:   
+    description = get_random_description()
+    parse_role_description(description)

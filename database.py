@@ -1,7 +1,7 @@
 from psycopg2.extras import execute_values
 from dotenv import load_dotenv
-from typing import List 
 import psycopg2
+from random import randint
 import os
 
 load_dotenv()
@@ -94,5 +94,28 @@ def insert_descriptions(descriptions):
   except Exception as e:
     conn.rollback()
     print(f"Error: {e}")
+
+def get_random_description():
+  try:
+    conn = psycopg2.connect(os.getenv("DB_URI"))
+    with conn.cursor() as cursor:
+      cursor.execute("""
+      SELECT description
+      FROM raw_roles
+      WHERE description IS NOT NULL
+      ORDER BY RANDOM()
+      LIMIT 1
+      """)
+      row = cursor.fetchone()[0]
+
+      cursor.close()
+      conn.close()
+
+      return row
+  
+  except Exception as e:
+    print(f"Error fetching random role description: {e}")
+    cursor.close()
+    conn.close()
 
 

@@ -1,5 +1,5 @@
-from db import create_table, insert_roles
-from dl_roles import get_webpage_content
+from database import create_table, insert_roles
+from download import get_webpage_content
 from lxml import html
 import requests
 import os
