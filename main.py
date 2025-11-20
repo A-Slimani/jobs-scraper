@@ -3,14 +3,18 @@ from database import (
   insert_roles, 
   insert_descriptions, 
   get_links, 
-  get_random_description
+  get_random_description,
+  get_all_descriptions
 )
 from extract import extract_roles, extract_description
 from download import get_webpage_content, save_content
 from parse import parse_role_description
+from collections import defaultdict
 from datetime import date
 from pathlib import Path
+import itertools
 import argparse
+import json
 import os
 
 if __name__ == "__main__":
@@ -20,7 +24,9 @@ if __name__ == "__main__":
   parser.add_argument('--extract-roles', action='store_true', help='extract and upload roles to db')
   parser.add_argument('--download-description', action='store_true', help='download each role page')
   parser.add_argument('--extract-description', action='store_true', help='extract descriptions from roles')
-  parser.add_argument('--test-keyword-parser', action='store_true', help='test the ollama keyword parser')
+  parser.add_argument('--test-keyword-extractor', action='store_true', help='test the ollama keyword parser')
+  parser.add_argument('--extract-keywords', action='store_true', help='extract and store keywords from roles')
+  parser.add_argument('--test', action='store_true')
 
 
   args = parser.parse_args()
@@ -82,6 +88,50 @@ if __name__ == "__main__":
     except Exception as e:
       print(f"Extraction error: {e}")
 
-  if args.test_keyword_parser:   
+  if args.test_keyword_extractor:   
     description = get_random_description()
-    parse_role_description(description)
+    print(description)
+    keywords = parse_role_description(description)
+    print(keywords)
+
+    file = Path("./keywords_test.json")
+
+    with open(file, 'r') as f:
+      keyword_counts = json.load(f)
+      
+    for word in keywords:
+      if word not in keyword_counts:
+        keyword_counts[word] = 1
+      else:
+        keyword_counts[word] += 1
+    
+    print(keyword_counts)
+
+    with open(file, 'w') as f:
+      json.dump(keyword_counts, f)
+
+  if args.test:
+    descriptions = get_all_descriptions()
+
+  if args.extract_keywords:
+    descriptions = get_all_descriptions()
+    keywords_raw = [parse_role_description(d) for d in descriptions]
+    keywords = list(itertools.chain(*keywords_raw))
+
+    file = Path("./keywords.json")
+    if not file.exists():
+      with open(file, 'w') as f:
+        e = {}
+        json.dump(e, f, indent=2)
+
+    with open(file, 'r') as f:
+      keyword_counts = json.load(f)
+      
+    for word in keywords:
+      if word not in keyword_counts:
+        keyword_counts[word] = 1
+      else:
+        keyword_counts[word] += 1
+    
+    with open(file, 'w') as f:
+      json.dump(keyword_counts, f, indent=2)

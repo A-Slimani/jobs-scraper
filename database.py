@@ -119,3 +119,26 @@ def get_random_description():
     conn.close()
 
 
+def get_all_descriptions():
+  try:
+    conn = psycopg2.connect(os.getenv("DB_URI"))
+    with conn.cursor() as cursor:
+      cursor.execute("""
+      SELECT description 
+      FROM raw_roles
+      WHERE description IS NOT NULL
+      LIMIT 10
+      """)
+      row = cursor.fetchall()
+
+      descriptions = [d[0] for d in row]
+
+      cursor.close()
+      conn.close()
+
+      return descriptions
+  
+  except Exception as e:
+    print(f"Error fetching all descriptions: {e}")
+    cursor.close()
+    conn.close()
